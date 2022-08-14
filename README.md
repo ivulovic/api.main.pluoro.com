@@ -1,1 +1,1 @@
-API of the [swemir](https://swemir.com/account) web app
+API of the [Pluoro](https://pluoro.com) web app
