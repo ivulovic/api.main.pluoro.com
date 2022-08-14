@@ -1,0 +1,1 @@
+API of the [swemir](https://swemir.com/account) web app
