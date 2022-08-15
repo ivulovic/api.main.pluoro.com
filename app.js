@@ -33,14 +33,16 @@ app.use(limiterMiddleware.rateLimiterMiddleware);
 
 // app.use(limiters.loginAttemptLimiterMiddleware);
 
-
-// Account
+// Routes
 const accountRoutes = require("./server/routes/account.routes");
 const wishRoutes = require("./server/routes/wishlist.routes");
+const directoryRoutes = require("./server/routes/notes/directory.routes");
+const noteRoutes = require("./server/routes/notes/note.routes");
 
-// ROUTES
 app.use("/api/account", accountRoutes);
 app.use("/api/wishlist", wishRoutes);
+app.use("/api/notes/directories", directoryRoutes);
+app.use("/api/notes/notes", noteRoutes);
 
 app.listen(port, () => {
   console.log(`Listening on ${port}`)

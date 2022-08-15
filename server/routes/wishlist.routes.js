@@ -5,6 +5,7 @@ const commonSchema = require("../schemas/common.schema");
 const tokenMiddleware = require("../middlewares/token.middleware");
 const WishlistController = require("../controllers/wishlist.controller");
 
+
 router
   .route("/:id")
   .get(
@@ -15,14 +16,13 @@ router
 router.use(tokenMiddleware);
 
 router
-  .route("/fetch")
-  .post([validateBody(wishSchema.fetch)], WishlistController.fetch);
-
-router.route("/").get(WishlistController.list);
+  .route("/")
+  .get(WishlistController.list)
+  .post([validateBody(wishSchema.create)], WishlistController.create);
 
 router
-  .route("/create")
-  .post([validateBody(wishSchema.create)], WishlistController.create);
+  .route("/fetch")
+  .post([validateBody(wishSchema.fetch)], WishlistController.fetch);
 
 router.route("/all").get(WishlistController.listAll);
 
