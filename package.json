@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/ivulovic/api.account.pluoro.com#readme",
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "pkg":"5.8.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
