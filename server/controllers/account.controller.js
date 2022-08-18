@@ -18,6 +18,7 @@ module.exports = {
         obj.password = hash;
         obj.createdAt = new Date().getTime();
         obj.modifiedAt = new Date().getTime();
+        obj.emailConfirmed = false;
         const user = await obj.save();
         const token = jwt.sign({ user: user._id }, secret, { expiresIn: "12h" });
         const isSecureCookie = process.env.NODE_ENV === "production";
@@ -47,17 +48,14 @@ module.exports = {
       return;
     }
     let user = await AccountModel.findOne({ email: req.body.email });//.populate("role");
-    if (user) {
+    if (user && user.emailConfirmed) {
       bcrypt.compare(req.body.password, user.password, async (err, success) => {
         if (success) {
           const token = jwt.sign({ user: user._id }, secret, { expiresIn: "8h" });
           await attemptLimiters.loginAttemptLimiterRedis.delete(usernameIPkey);
           user.password = undefined;
-          if (process.env.NODE_ENV === 'production') {
-            res.cookie('Authorization', token, { expires: dateAdd(new Date(), 'hour', 8), path: "/", sameSite: "Strict", httpOnly: true, secure: true });
-          } else {
-            res.cookie('Authorization', token, { expires: dateAdd(new Date(), 'hour', 8), path: "/", sameSite: "Strict", httpOnly: false, secure: false, });
-          }
+          const isSecureCookie = process.env.NODE_ENV === 'production';
+          res.cookie('Authorization', token, { expires: dateAdd(new Date(), 'hour', 8), path: "/", sameSite: "Strict", httpOnly: isSecureCookie, secure: isSecureCookie });
           res.status(200).send(user)
         } else {
           try {
@@ -82,7 +80,10 @@ module.exports = {
     const user = await AccountModel.findOne({ _id: req.decoded.user }, { password: 0 });
     if (user) {
       const { firstName, lastName, email, username} = user;
-      res.json({ firstName, lastName, email, username });
+      const token = jwt.sign({ user: user._id }, secret, { expiresIn: "8h" });
+      const isSecureCookie = process.env.NODE_ENV === 'production';
+      res.cookie('Authorization', token, { expires: dateAdd(new Date(), 'hour', 8), path: "/", sameSite: "Strict", httpOnly: isSecureCookie, secure: isSecureCookie });
+      res.status(200).send({ firstName, lastName, email, username });
     } else {
       res.status(404).send(NotFound);
     }

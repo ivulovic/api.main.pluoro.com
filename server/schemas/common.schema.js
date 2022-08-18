@@ -6,5 +6,8 @@ module.exports = {
   }),
   username: Joi.object().keys({
     param: Joi.string().required(),
+  }),
+  email: Joi.object().keys({
+    param: Joi.string().email().required(),
   })
 }

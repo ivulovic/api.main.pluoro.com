@@ -34,6 +34,10 @@ module.exports = {
   },
   remove: async (req, res) => {
     const { id } = req.value.params;
+    const directory = await DirectoryModel.findById(id);
+    if(directory.createdBy.toString() !== req.decoded.user){
+      return res.status(403).send(Unauthorized);
+    }
     const notesToRemove = await NoteModel.find({ directory: id });
     if (notesToRemove) {
       for (let i = 0; i < notesToRemove.length; i++) {

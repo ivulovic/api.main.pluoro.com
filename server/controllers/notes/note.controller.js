@@ -37,7 +37,10 @@ module.exports = {
   },
   remove: async (req, res) => {
     const { id } = req.value.params;
-    // add only creator can delete
+    const note = await NoteModel.findById(id);
+    if(note.createdBy.toString() !== req.decoded.user){
+      return res.status(403).send(Unauthorized);
+    }
     let objToSave = await NoteModel.findByIdAndRemove(id);
     objToSave.directory = await DirectoryModel.findById(objToSave.directory);
     res.status(200).send(objToSave);

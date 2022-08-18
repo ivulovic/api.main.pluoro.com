@@ -7,6 +7,7 @@ const AccountSchema = new Schema({
   password: String,
   createdAt: Number,
   modifiedAt: Number,
+  emailConfirmed: Boolean,
 });
 
 module.exports = model("account", AccountSchema); 
